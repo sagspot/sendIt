@@ -32,6 +32,26 @@ router.post('/', (req, res) => {
   res.send(users);
 });
 
+// delete a user
+router.delete('/:id', (req, res) => {
+  const found = users.some((user) => user.id == req.params.id);
+  if (found) {
+    users.filter((user, i) => {
+      if (user.id == req.params.id) {
+        index = i;
+        return i;
+      }
+    });
+
+    users.splice(index, 1);
+
+    res.json(users);
+  } else
+    res
+      .status(400)
+      .json({ msg: `No user with the id of ${req.params.id} found` });
+});
+
 // send parcel
 router.post('/send/:userid', (req, res) => {
   const sender = users.filter((user) => user.id == req.params.userid);
