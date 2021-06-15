@@ -1,6 +1,7 @@
 const express = require('express');
 const uuid = require('uuid');
 const moment = require('moment');
+
 const users = require('../users');
 
 const router = express.Router();
@@ -29,7 +30,7 @@ router.post('/', (req, res) => {
   };
 
   users.push(newUser);
-  res.send(users);
+  res.send(newUser);
 });
 
 // delete a user
@@ -45,7 +46,7 @@ router.delete('/:id', (req, res) => {
 
     users.splice(index, 1);
 
-    res.json(users);
+    res.json({ msg: `User deleted` });
   } else
     res
       .status(400)
@@ -95,7 +96,8 @@ router.post('/send/:userid', (req, res) => {
     });
   }
 
-  res.send(sender[0].sent);
+  res.json({ sender: sentParcel, recipient: receivedParcel });
+  // res.send(sender[0].sent);
 });
 
 // receive parcel || mark parcel as delivered
@@ -120,7 +122,7 @@ router.patch('/receive/:userid/:itemid', (req, res) => {
         sentItem[0].recipient.remarks = item[0].remarks;
       });
 
-      res.send(item);
+      res.json(item[0]);
     } catch (error) {
       res
         .status(400)
