@@ -10,7 +10,16 @@ const registerValidation = (data) => {
   return schema.validate(data);
 };
 
-const sendParcel = (data) => {
+const loginValidation = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  });
+
+  return schema.validate(data);
+};
+
+const sendParcelValidation = (data) => {
   const schema = Joi.object({
     item: Joi.string().min(3).required(),
     toUser: Joi.string().email().required(),
@@ -19,5 +28,16 @@ const sendParcel = (data) => {
   return schema.validate(data);
 };
 
+const receiveParcelValidation = (data) => {
+  const schema = Joi.object({
+    isDelivered: Joi.boolean().required(),
+    remarks: Joi.string(),
+  });
+
+  return schema.validate(data);
+};
+
 module.exports.registerValidation = registerValidation;
-module.exports.sendParcel = sendParcel;
+module.exports.loginValidation = loginValidation;
+module.exports.sendParcelValidation = sendParcelValidation;
+module.exports.receiveParcelValidation = receiveParcelValidation;

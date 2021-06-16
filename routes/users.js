@@ -9,6 +9,6 @@ router.post('/register', usersController.users_post_register);
 
 router.post('/login', usersController.users_post_login);
 
-router.delete('/', isAuthenticated);
+router.delete('/', isAuthenticated, usersController.users_post_delete);
 
 module.exports = router;

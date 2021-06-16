@@ -2,7 +2,10 @@ const users = require('../model/users');
 const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
 
-const { registerValidation } = require('../middlewares/validation');
+const {
+  registerValidation,
+  loginValidation,
+} = require('../middlewares/validation');
 
 exports.users_get_all = (req, res) => res.send(users);
 
@@ -18,21 +21,25 @@ exports.users_post_register = async (req, res) => {
   if (emailExist) return res.status(400).send('Email already registered');
 
   // create user
-  const user = {
+  const newUser = {
     id: uuid.v4(),
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
   };
+
   try {
-    await users.push(user);
-    res.send(user);
+    await users.push(newUser);
+    res.send(newUser);
   } catch (err) {
     res.status(400).send(err);
   }
 };
 
 exports.users_post_login = async (req, res) => {
+  const { error } = loginValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
   const emailExist = await users.some(
     (person) => person.email == req.body.email
   );
@@ -54,7 +61,7 @@ exports.users_post_login = async (req, res) => {
 };
 
 exports.users_post_delete = (req, res) => {
-  const person = users.filter((user, i) => {
+  users.filter((user, i) => {
     if (user.id == req.user.id) return (index = i);
   });
   try {
