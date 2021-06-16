@@ -24,14 +24,14 @@ exports.parcel_post_send = (req, res) => {
   const { error } = sendParcelValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  if (req.user.email == req.body.toUser)
+  if (req.user.email == req.body.toUser.toLowerCase())
     return res.status(400).send('Cannot send parcel to self');
 
   const newParcel = {
     id: uuid.v4(),
     item: req.body.item,
     fromUser: req.user.email,
-    toUser: req.body.toUser,
+    toUser: req.body.toUser.toLowerCase(),
     sendDate: moment().format('lll'),
     deliveryDate: '',
     status: '',

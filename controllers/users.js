@@ -24,7 +24,7 @@ exports.users_post_register = async (req, res) => {
   const newUser = {
     id: uuid.v4(),
     name: req.body.name,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     password: req.body.password,
   };
 
@@ -41,23 +41,31 @@ exports.users_post_login = async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const emailExist = await users.some(
-    (person) => person.email == req.body.email
+    (person) => person.email == req.body.email.toLowerCase()
   );
   if (!emailExist) return res.status(400).send('Email not found');
 
-  const user = await users.filter((person) => person.email == req.body.email);
+  const user = await users.filter(
+    (person) => person.email == req.body.email.toLowerCase()
+  );
 
   const [person] = user;
 
   if (req.body.password !== person.password)
     return res.status(400).send('Invalid password');
 
-  // Create and assign token on successful login
-  const token = jwt.sign(
-    { id: person.id, name: person.name, email: person.email },
-    process.env.TOKEN_SECRET
-  );
-  res.header('auth-token', token).send(token);
+  try {
+    // Create and assign token on successful login
+    const token = jwt.sign(
+      { id: person.id, name: person.name, email: person.email },
+      process.env.TOKEN_SECRET,
+      { expiresIn: '1h' }
+    );
+    // res.header('auth-token', token).send(token);
+    res.status(200).json({ message: 'Auth successful', token });
+  } catch (err) {
+    res.status(401).send(err);
+  }
 };
 
 exports.users_post_delete = (req, res) => {
