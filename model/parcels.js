@@ -51,4 +51,4 @@ const parcels = [
   },
 ];
 
-module.exports = parcels;
+export default parcels;

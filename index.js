@@ -1,16 +1,17 @@
-const path = require('path');
-const express = require('express');
-const dotenv = require('dotenv').config();
+import path from 'path';
+import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const userRoute = require('./routes/users');
-const parcelRoute = require('./routes/parcels');
+import userRoute from './routes/users.js';
+import parcelRoute from './routes/parcels.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', userRoute);
 app.use('/api/parcel', parcelRoute);

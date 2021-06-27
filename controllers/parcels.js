@@ -1,15 +1,15 @@
-const uuid = require('uuid');
-const moment = require('moment');
+import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
-const {
+import {
   sendParcelValidation,
   receiveParcelValidation,
-} = require('../middlewares/validation');
-const parcels = require('../model/parcels');
+} from '../middlewares/validation.js';
+import parcels from '../model/parcels.js';
 
-exports.parcel_get_all = (req, res) => res.send(parcels);
+export const parcel_get_all = (req, res) => res.send(parcels);
 
-exports.parcel_get_user_history = (req, res) => {
+export const parcel_get_user_history = (req, res) => {
   const sentParcels = parcels.filter(
     (parcel) => parcel.fromUser == req.user.email
   );
@@ -19,7 +19,7 @@ exports.parcel_get_user_history = (req, res) => {
   res.json({ sentParcels, receivedParcels });
 };
 
-exports.parcel_post_send = (req, res) => {
+export const parcel_post_send = (req, res) => {
   // Validate parcel
   const { error } = sendParcelValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -28,7 +28,7 @@ exports.parcel_post_send = (req, res) => {
     return res.status(400).send('Cannot send parcel to self');
 
   const newParcel = {
-    id: uuid.v4(),
+    id: uuidv4(),
     item: req.body.item,
     fromUser: req.user.email,
     toUser: req.body.toUser.toLowerCase(),
@@ -46,7 +46,7 @@ exports.parcel_post_send = (req, res) => {
   }
 };
 
-exports.parcel_patch_receive = (req, res) => {
+export const parcel_patch_receive = (req, res) => {
   // Validate parcel
   const { error } = receiveParcelValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -62,7 +62,7 @@ exports.parcel_patch_receive = (req, res) => {
       (parcel) => parcel.id == req.params.id
     );
 
-    [deliveredParcel] = receivedParcel;
+    const [deliveredParcel] = receivedParcel;
 
     (deliveredParcel.deliveryDate = moment().format('lll')),
       (deliveredParcel.status =

@@ -1,14 +1,20 @@
-const router = require('express').Router();
+import express from 'express';
+const router = express.Router();
 
-const isAuthenticated = require('../middlewares/auth');
-const usersController = require('../controllers/users');
+import isAuthenticated from '../middlewares/auth.js';
+import {
+  users_get_all,
+  users_post_register,
+  users_post_login,
+  users_post_delete,
+} from '../controllers/users.js';
 
-router.get('/', usersController.users_get_all);
+router.get('/', users_get_all);
 
-router.post('/register', usersController.users_post_register);
+router.post('/register', users_post_register);
 
-router.post('/login', usersController.users_post_login);
+router.post('/login', users_post_login);
 
-router.delete('/', isAuthenticated, usersController.users_post_delete);
+router.delete('/', isAuthenticated, users_post_delete);
 
-module.exports = router;
+export default router;
