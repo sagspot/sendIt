@@ -30,7 +30,11 @@ export const users_post_register = async (req, res) => {
 
   try {
     await users.push(newUser);
-    res.send(newUser);
+    res.json({
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -68,14 +72,11 @@ export const users_post_login = (req, res) => {
   }
 };
 
-// Not currenty working
 export const users_post_delete = (req, res) => {
-  users.filter((user, i) => {
-    if (user.id == req.user.id) return (index = i);
-  });
+  const index = users.findIndex((user) => user.id == req.user.id);
   try {
     users.splice(index, 1);
-    res.sendstatus(204);
+    res.sendStatus(204);
   } catch (err) {
     res.status(400).send(err);
   }

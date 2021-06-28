@@ -13,10 +13,14 @@ export const parcel_get_user_history = (req, res) => {
   const sentParcels = parcels.filter(
     (parcel) => parcel.fromUser == req.user.email
   );
-  const receivedParcels = parcels.filter(
-    (parcel) => parcel.toUser == req.user.email
-  );
-  res.json({ sentParcels, receivedParcels });
+  try {
+    const receivedParcels = parcels.filter(
+      (parcel) => parcel.toUser == req.user.email
+    );
+    res.json({ sentParcels, receivedParcels });
+  } catch (err) {
+    res.status(500).send('Something went wrong');
+  }
 };
 
 export const parcel_post_send = (req, res) => {
@@ -34,7 +38,7 @@ export const parcel_post_send = (req, res) => {
     toUser: req.body.toUser.toLowerCase(),
     sendDate: moment().format('lll'),
     deliveryDate: '',
-    status: '',
+    status: 'pending',
     remarks: '',
   };
 
@@ -47,6 +51,8 @@ export const parcel_post_send = (req, res) => {
 };
 
 export const parcel_patch_receive = (req, res) => {
+  if (!req.params.id) return res.status(400).send('ID is missing in the URI');
+
   // Validate parcel
   const { error } = receiveParcelValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);

@@ -1,18 +1,47 @@
-import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import morgan from 'morgan';
+import swaggerUI from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
+
 dotenv.config();
 
 import userRoute from './routes/users.js';
 import parcelRoute from './routes/parcels.js';
 
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'SendIt parcel solution API',
+      version: '1.0.0',
+      deccription: 'A simple express library API',
+    },
+    servers: [
+      {
+        description: 'Dev server',
+        url: 'http://localhost:5000',
+      },
+      {
+        description: 'Prod server',
+        url: 'https://sagspot-sendit.herokuapp.com',
+      },
+    ],
+  },
+  apis: ['./routes/*.js'],
+};
+
+const specs = swaggerJsDoc(options);
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use(morgan('dev'));
 
-// app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.use('/api', userRoute);
 app.use('/api/parcel', parcelRoute);
 
