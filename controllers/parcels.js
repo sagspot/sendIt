@@ -17,9 +17,9 @@ export const parcel_get_user_history = (req, res) => {
     const receivedParcels = parcels.filter(
       (parcel) => parcel.toUser == req.user.email
     );
-    res.json({ sentParcels, receivedParcels });
+    return res.json({ sentParcels, receivedParcels });
   } catch (err) {
-    res.status(500).send('Something went wrong');
+    return res.status(500).send('Something went wrong');
   }
 };
 
