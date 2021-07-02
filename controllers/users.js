@@ -31,7 +31,9 @@ export const users_post_register = async (req, res) => {
   try {
     await users.push(newUser);
 
-    const user = { id: newUser.id, name: newUser.name, email: newUser.email };
+    const { id, name, email } = newUser;
+
+    const user = { id, name, email };
 
     // Create and assign token on successful registration
     const token = jwt.sign(user, process.env.TOKEN_SECRET, {
@@ -65,11 +67,10 @@ export const users_post_login = (req, res) => {
 
   try {
     // Create and assign token on successful login
-    const token = jwt.sign(
-      { id: person.id, name: person.name, email: person.email },
-      process.env.TOKEN_SECRET,
-      { expiresIn: '1h' }
-    );
+    const { id, name, email } = person;
+    const token = jwt.sign({ id, name, email }, process.env.TOKEN_SECRET, {
+      expiresIn: '1h',
+    });
     return res.status(200).json({ message: 'Auth successful', token });
   } catch (err) {
     return res.status(401).send(err);
