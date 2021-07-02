@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-const registerValidation = (data) => {
+export const registerValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(255).required(),
     email: Joi.string().email().required(),
@@ -10,7 +10,7 @@ const registerValidation = (data) => {
   return schema.validate(data);
 };
 
-const loginValidation = (data) => {
+export const loginValidation = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
@@ -19,7 +19,7 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
-const sendParcelValidation = (data) => {
+export const sendParcelValidation = (data) => {
   const schema = Joi.object({
     item: Joi.string().min(3).required(),
     toUser: Joi.string().email().required(),
@@ -28,7 +28,7 @@ const sendParcelValidation = (data) => {
   return schema.validate(data);
 };
 
-const receiveParcelValidation = (data) => {
+export const receiveParcelValidation = (data) => {
   const schema = Joi.object({
     isDelivered: Joi.boolean().required(),
     remarks: Joi.string(),
@@ -36,8 +36,3 @@ const receiveParcelValidation = (data) => {
 
   return schema.validate(data);
 };
-
-module.exports.registerValidation = registerValidation;
-module.exports.loginValidation = loginValidation;
-module.exports.sendParcelValidation = sendParcelValidation;
-module.exports.receiveParcelValidation = receiveParcelValidation;

@@ -26,4 +26,4 @@ const users = [
   },
 ];
 
-module.exports = users;
+export default users;
