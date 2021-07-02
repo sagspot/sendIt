@@ -26,7 +26,7 @@ export const parcel_get_user_history = (req, res) => {
 export const parcel_post_send = (req, res) => {
   // Validate parcel
   const { error } = sendParcelValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.details.message);
 
   if (req.user.email == req.body.toUser.toLowerCase())
     return res.status(400).send('Cannot send parcel to self');
@@ -44,9 +44,9 @@ export const parcel_post_send = (req, res) => {
 
   try {
     parcels.push(newParcel);
-    res.send(newParcel);
+    return res.status(201).send(newParcel);
   } catch (err) {
-    res.status(400).send(err);
+    return res.status(400).send(err);
   }
 };
 
@@ -55,7 +55,7 @@ export const parcel_patch_receive = (req, res) => {
 
   // Validate parcel
   const { error } = receiveParcelValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.details.message);
 
   // list all user's received item
   const receivedParcels = parcels.filter(
@@ -75,8 +75,8 @@ export const parcel_patch_receive = (req, res) => {
         req.body.isDelivered == true ? 'delivered' : 'pending'),
       (deliveredParcel.remarks = req.body.remarks ? req.body.remarks : '');
 
-    res.send(deliveredParcel);
+    return res.status(200).send(deliveredParcel);
   } catch (err) {
-    res.status(400).send('product not found');
+    return res.status(400).send('product not found');
   }
 };

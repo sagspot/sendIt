@@ -12,7 +12,7 @@ export const users_get_all = (req, res) => res.send(users);
 export const users_post_register = async (req, res) => {
   // Validate user
   const { error } = registerValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.details.message);
 
   // Check is email exists
   const emailExist = await users.some(
@@ -38,15 +38,15 @@ export const users_post_register = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ user, token });
+    return res.json({ user, token });
   } catch (err) {
-    res.status(400).send(err);
+    return res.status(400).send(err);
   }
 };
 
 export const users_post_login = (req, res) => {
   const { error } = loginValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.details.message);
 
   const emailExist = users.some(
     (person) => person.email == req.body.email.toLowerCase()
@@ -70,9 +70,9 @@ export const users_post_login = (req, res) => {
       process.env.TOKEN_SECRET,
       { expiresIn: '1h' }
     );
-    res.status(200).json({ message: 'Auth successful', token });
+    return res.status(200).json({ message: 'Auth successful', token });
   } catch (err) {
-    res.status(401).send(err);
+    return res.status(401).send(err);
   }
 };
 
@@ -80,8 +80,8 @@ export const users_post_delete = (req, res) => {
   const index = users.findIndex((user) => user.id == req.user.id);
   try {
     users.splice(index, 1);
-    res.sendStatus(204);
+    return res.sendStatus(204);
   } catch (err) {
-    res.status(400).send(err);
+    return res.status(400).send(err);
   }
 };
