@@ -30,11 +30,15 @@ export const users_post_register = async (req, res) => {
 
   try {
     await users.push(newUser);
-    res.json({
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
+
+    const user = { id: newUser.id, name: newUser.name, email: newUser.email };
+
+    // Create and assign token on successful registration
+    const token = jwt.sign(user, process.env.TOKEN_SECRET, {
+      expiresIn: '1h',
     });
+
+    res.json({ user, token });
   } catch (err) {
     res.status(400).send(err);
   }
