@@ -20,12 +20,12 @@ const options = {
     },
     servers: [
       {
-        description: 'Dev server',
-        url: 'http://localhost:5000',
-      },
-      {
         description: 'Prod server',
         url: 'https://sagspot-sendit.herokuapp.com',
+      },
+      {
+        description: 'Dev server',
+        url: 'http://localhost:5000',
       },
     ],
   },
@@ -44,6 +44,7 @@ app.use(morgan('dev'));
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.use('/api', userRoute);
 app.use('/api/parcel', parcelRoute);
+app.get('/', (req, res) => res.redirect('/api-docs'));
 
 const PORT = process.env.PORT || 5000;
 
